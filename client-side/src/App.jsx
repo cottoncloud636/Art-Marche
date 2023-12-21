@@ -5,10 +5,14 @@ import Register from './frontend-pages/Register';
 import Login from './frontend-pages/Login';
 import About from './frontend-pages/About';
 import Detail from './frontend-pages/Detail';
+import Header from './frontend-components/Header';
 
 
 export default function App() {
   return (<BrowserRouter>
+    <Header />
+
+    {/* within Routes is for putting pages */}
     <Routes>
       <Route path='/' element={<Home />}/>
       <Route path='/register' element={<Register />} />
