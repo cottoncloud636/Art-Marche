@@ -15,7 +15,7 @@ export default function App() {
     {/* within Routes is for putting pages */}
     <Routes>
       <Route path='/' element={<Home />}/>
-      <Route path='/register' element={<Register />} />
+      <Route path='/register' element={<Register />} /> {/* explain: the component Regsiter resides in endpoint /register */}
       <Route path='/login' element={<Login />} />
       <Route path='/about' element={<About />} />
       <Route path='/detail' element={<Detail />} />
