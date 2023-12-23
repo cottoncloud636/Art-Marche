@@ -21,6 +21,25 @@ app.use('/api/user', userRouter); //whenever sb. goto this endpoint: /api/user, 
 
 app.use('/api/auth', authRouter); 
 
+//add middleware to handle various errors
+app.use((err, req, res, next) => { //err: the err we send to middle, next: go to next middleware in the stack
+                                  //after current middleware finish the op
+    const statusCode = err.statusCode || 500; //get the status code caused from the err and save to statusCode
+                                        //or if there is no such status code caused from err, then simply use
+                                        //the generic error code: 500
+    const message = err.message || '500: internal server error'; //except status code, I also want to get the 
+                                    //message generated from the error. If there is such msg, save to message
+                                    //var, if not, simly show this string after ||.
+    return res.status(statusCode).json(
+        {
+            success: false,
+            statusCode, //same as code -- statusCode: statusCode, but since key-value are same name, in ES6, 
+                        //I can omit this "duplicate" name
+            message,
+        }
+    );                
+
+});
 
 
 app.listen(3000, ()=>{
