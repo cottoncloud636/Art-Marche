@@ -9,8 +9,18 @@ export default {
       fontFamily: {
         head: ['Rock Salt', 'cursive'],
         nav: ['Philosopher', 'sans-serif'],
-     }
-    },
+     },
+     gradientColorStops:theme=>({
+      'blue-pink':{
+        '0': '#3490dc',
+        '50': '#3490dc',
+        '100': '#f68b8b',
+      },
+    }),
+
   },
+
+},
+
   plugins: [],
 }

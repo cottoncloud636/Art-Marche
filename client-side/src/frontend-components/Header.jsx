@@ -8,8 +8,8 @@ export default function Header() {
 
 
   return (
-    <header style={{backgroundImage: encodedSVG}} className='shadow-md'>
-        <div className='flex justify-between items-center max-w-6xl mx-auto p-5'> {/*flex brings all items side by side. justify-between create space between each item. items-center: brings all items vertically down to center. mx: margin. p: padding */}
+    <header style={{backgroundImage: encodedSVG}} className='shadow-md h-48'>
+        <div className='flex justify-between items-center max-w-6xl mx-auto p-12'> {/*flex brings all items side by side. justify-between create space between each item. items-center: brings all items vertically down to center. mx: margin. p: padding */}
           <Link to='/'>
             <h1 className='font-bold text-sm sm:text-6xl font-head text-violet-800 animate-pulse pulse-slow flex 
                           flex-wrap' >Art Marché
@@ -20,17 +20,17 @@ export default function Header() {
             <FaSearch className='text-slate-600'/>
           </form>
 
-          <ul className='flex gap-8'>
+          <ul className='flex gap-8 '>
           <Link to='/'>
-            <li className='hover:underline text-xl font-semibold text-indigo-900 font-nav'>Home</li>
+            <li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 font-nav'>Home</li>
           </Link>
 
           <Link to='/about'>
-            <li className='hover:underline text-xl font-semibold text-indigo-900 font-nav'>About</li>
+            <li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 font-nav'>About</li>
           </Link>
 
           <Link to='/login'>
-            <li className='hover:underline text-xl font-semibold text-indigo-900 font-nav'>Login</li>
+            <li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 font-nav'>Login</li>
           </Link>
           </ul>
         </div>
