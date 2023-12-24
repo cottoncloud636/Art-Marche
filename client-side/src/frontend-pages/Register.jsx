@@ -68,7 +68,7 @@ export default function Register() {
   return (
     <div className='h-screen w-screen bg-gradient-to-r from-pink-200 to-purple-400 opacity-80 mx-auto '>{/* mx: margin */}
 
-      <h1 className='text-center text-4xl font-semibold py-16'>User Login</h1> {/* my-16: apply margin only to top */}
+      <h1 className='text-center text-4xl font-semibold py-16'>User Login</h1> {/* my-16: apply margin only to top and bottom */}
       <form onSubmit={handleSubmit} className='flex flex-col gap-4 items-center justify-center' > {/* items-center results form sit in center horizontally */}
         {/* id should have the same name as we defined in User model. Previously I used "id=username", but in model is: userName, then error occurs, it kept saying userName is required */}
         <input type='text' id='userName' placeholder='Username' onChange={handleChange} 
