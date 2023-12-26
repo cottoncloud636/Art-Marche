@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
 import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {loginStart, loginSuccess, loginfail } from '../redux/user/userSlice';
 
-export default function Login() {
+export default function Login() {  
   const [formInfo, setFormInfo] = useState({});//a formInfo object which holds all the form data(username, email,
                                            // psw), and a setFormInfo func to update formInfo. Initially,
                                            //formInfo obj is empty
+  /* ^^^^^^^ The following two states code are replaced by global state use userSelector hook ^^^^^^^^ */
+  /*
   const [err, setErr] = useState(null); //keep track of potential errors
   const [loading, setLoading] = useState(false);//add a loading effect to register button area, S.A. during 
-                                                //submitting, display the wording "loading", "wait for a moment"
-                                                //etc. Initially nothing is loading, hence set to false
+                                        //submitting, display the wording "loading", "wait for a moment"
+                                        //etc. Initially nothing is loading, hence set to false
+  */
+  const {loading, error} = useSelector((state) => state.user);//the name of the slice"user" comes from 
+                                     //"userSlice.js", this is a global state
+
 
   const navigate = useNavigate();
+  const dispatch = useDispatch(); //use dispatch for sending action to redux store
 
   const handleChange = (event)=>{
     //goal: "hook"(keep) the previous form info, and update to the current form info
@@ -31,7 +40,8 @@ export default function Login() {
     //once submit, let me fetch the endpoint that I want to submit the form info to. 
     //use fetch API to make an HTTP POST request to server
     try{
-      setLoading(true);//once submit, it starts to load, hence set to true
+      // ^^^^^^^^ this code is replaced by following redux code--setLoading(true); --once submit, it starts to load, hence set to true
+      dispatch(loginStart()); //loginStart() is one of the reducer functions
       const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: {'Content-Type': 'application/json',},//in HTTP request, Content-Type is a standardized header
@@ -47,19 +57,33 @@ export default function Login() {
                             //result in the data variable. This assumes that the server responds with JSON data.
       console.log(data);//for test purpose, to see what data do we get back after submitting forminfo to server
       if (data.success===false){
+        /* ^^^^^^ the following 2 line of code is replaced by the following line of redux code
         setLoading(false); //then set loading to false, telling js do not load
         setErr(data.message);//in index.js, we use middleware to handle errors, in here, we call retrieve the res,
+        */
+        dispatch(loginfail(data.message)); //once get the "data" from res.json(), use middleware from index.js
+                                          //to display the message if any
+
         // then convert to json then save to "data" var, then if there is any type of error, let's retrieve the 
         //the error message
         return; 
       }
+      /*^^^^^^the following 2 line of code is replaced by the following line of redux code
       setLoading(false);//else setLoading to false, because user is by then successfully created, we don't
                              //need to load anymore
       setErr(null);  
-      navigate('/'); //navigate change the current route or location w/i the application w/o causing a full page reload
+      */
+     dispatch(loginSuccess(data));//else login successful, use dispatch to send action to redux store
+                                  //and pass in the data from res.json()
+    navigate('/'); //navigate change the current route or location w/i the application w/o causing a full page reload
      }catch(error){
+      /*^^^^^^the following 2 line of code is replaced by the following line of redux code
       setLoading(false);
       setErr(data.message);
+      */
+      dispatch(loginfail(error.message)); //if login failed due to certain error, dispatch the loginfail
+                            //method with its error message to redux store.
+
     }
   };
 
@@ -89,7 +113,7 @@ export default function Login() {
           <span className='text-purple-900 font-semibold hover:tracking-wider hover:underline'>Register Now</span>
         </Link>
       </div>
-      {err && <p>{err}</p>}
+      {error && <p>{error}</p>}
 
     </div>
   )
