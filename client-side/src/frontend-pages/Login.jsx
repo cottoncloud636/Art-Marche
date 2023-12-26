@@ -99,7 +99,7 @@ export default function Login() {
           className='border rounded-lg h-12 w-64 p-4' 
         />
         {/* I don't need email for user login, hence delete this part */}
-        <input type='text' id='password' placeholder='Password' onChange={handleChange} 
+        <input type='password' id='password' placeholder='Password' onChange={handleChange} 
           className='border rounded-lg h-12 w-64 p-4'
         />
         <button disabled={loading} className='bg-purple-900 text-white p-3 rounded-lg hover:bg-blue-600 disabled: opacity-70 w-64' >
