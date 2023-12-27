@@ -1,11 +1,14 @@
 import React from 'react'
 import {FaSearch} from 'react-icons/fa' //Fa: font awesome
 import { Link } from 'react-router-dom'; //allows user goto different pages thru a button or a link w/o refreshing the pagee
+import { useSelector } from 'react-redux';
 
 export default function Header() {
   const svgData = `<svg xmlns="http://www.w3.org/2000/svg"><defs><pattern id="a" width="20" height="40" patternTransform="scale(2)" patternUnits="userSpaceOnUse"><rect width="100%" height="100%" fill="hsla(54, 100%, 86%, 1)"/><path fill="none" stroke="hsla(187, 72%, 76%, 1)" d="M0 30h20L10 50zm-10-20h20L0 30zm20 0h20L20 30zM0-10h20L10 10z"/></pattern></defs><rect width="800%" height="800%" fill="url(#a)"/></svg>`;
   const encodedSVG = `url("data:image/svg+xml;utf8,${encodeURIComponent(svgData)}")`;
 
+  const {currentUser} = useSelector(state => state.user); //extract current user from userSlice, name of 
+                                           //the var. all come from userSlice.js
 
   return (
     <header style={{backgroundImage: encodedSVG}} className='shadow-md h-48'>
@@ -29,8 +32,12 @@ export default function Header() {
             <li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 font-nav'>About</li>
           </Link>
 
-          <Link to='/login'>
-            <li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 font-nav'>Login</li>
+          {/* if user logged in, display profile photo. else show wording "login" */}
+          <Link to='/profile'>
+            {currentUser? (<img src={currentUser.picture} alt='profile picture' className = 'rounded-full h-8 w-8 object-cover'/>) //name "picture" came from key name in auth.controllers.js
+              :  (<li className='hover:tracking-wider hover:underline text-xl font-semibold text-indigo-900 
+                font-nav'>Login</li>)
+            }
           </Link>
           </ul>
         </div>
