@@ -110,7 +110,7 @@ export default function Login() {
       </form>
       
       <div className='flex justify-center gap-3 mt-5'>
-        <p className='font-semibold font-'>Are you a new user?</p>
+        <p className='font-semibold'>Are you a new user?</p>
         <Link to={"/register"}>
           <span className='text-purple-900 font-semibold hover:tracking-wider hover:underline'>Register Now</span>
         </Link>
