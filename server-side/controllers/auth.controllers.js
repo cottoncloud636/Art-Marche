@@ -64,3 +64,45 @@ export const login =  async (req, res, next)=>{
         next(error);
     }
 };
+
+export const googleauth = async (req, res, next)=>{
+    //if user already have a google account, find their email then log them in, else create a google acct
+    try{
+        const googleUser = await User.findOne({email: req.body.email}); //User is from model in mongoDB
+                                             //name "email" came from GoogleOAuth 
+        if (googleUser){ //if user's google acct is found, then create a token and save it to a cookie
+            const token = jwt.sign({id: googleUser._id}, process.env.JWT_SECRET); //use jwt to create tken and pass in a uniqe value
+            const {password: pass, ...rest} = googleUser._doc; //I don't want to save password in cookie,
+                                       //hence I separate it from the "rest"
+             //send the response back with the token to the cookie, the status code and "rest" data
+             res
+                .cookie('access_token', token, {httpOnly: true}).status(200).json(rest);
+        }
+        else{ //if user has no google acct, create one for them.
+            //Note: password was set "required" by me, but when we use google auth, I don't require psw
+            //     from google. To solve this deadlock, I can generate a random psw manually for it
+            const randomAuthPsw = Math.random().toString(36).slice(-8); //36: refers to "number from 0-9 and letters from a-z"
+                                                //then get the last 8 digits since this random number 
+                                                //will be a decimal number. If I need 16 digits, I can 
+                                                //copy the same code and concatenate "+Math.random().toString(36).slice(-8);"
+            const hashRandAuthPsw = bcryptjs.hashSync(randomAuthPsw, 10); //then has the psw
+            const newGleAuthUser = new User({ //then save the obj contains this user's info to the newGleAuthUser var
+                //the var "name, email, photo" after "req.body." came from the info we got from
+                //GoogleOAuth.jsx . The key name "userName, email..." came from user model
+                userName: req.body.name.split(" ").join("").toLowerCase()+Math.random().toString(36).slice(-3),//as seen
+                                                  //in console, the name is split into "Xian Zhou", I need a user name
+                                                  //as for ex: "xianzhou225".
+                email: req.body.email,
+                password: hashRandAuthPsw,
+                picture: req.body.photo
+            });
+            await newGleAuthUser.save(); //save the new google auth user
+            const token = jwt.sign({id: newGleAuthUser._id}, process.env.JWT_SECRET);//create token
+            const {password: pass, ...rest} = newGleAuthUser._doc;//separate the psw from the token
+            res.cookie('access_token', token, {httpOnly: true}).status(200).json(rest);//create a response
+                             // (remember I am in server-side now, save token to cookie
+        }
+    } catch(error){
+        next(error);
+    }
+}

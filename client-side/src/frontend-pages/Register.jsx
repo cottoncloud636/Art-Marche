@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import GoogleOAuth from '../frontend-components/GoogleOAuth';
 
 export default function Register() {
   const [formInfo, setFormInfo] = useState({});//a formInfo object which holds all the form data(username, email,
@@ -83,6 +84,7 @@ export default function Register() {
         <button disabled={loading} className='bg-purple-900 text-white p-3 rounded-lg hover:bg-blue-600 disabled: opacity-70 w-64' >
           {loading? "One moment please..." : 'Register'}
         </button>
+        <GoogleOAuth />
       </form>
       
       <div className='flex justify-center gap-3 mt-5'>
