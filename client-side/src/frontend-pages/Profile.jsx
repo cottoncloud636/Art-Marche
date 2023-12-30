@@ -1,14 +1,94 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
+import {useRef} from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react'; 
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import {app} from '../../src/firebaseConfig.js';
 
 export default function Profile() {
+  const fileRef = useRef(null);
   const {currentUser} = useSelector( (state)=>state.user );
+  const [file, setFile] = useState(undefined); //use a local state to keep track of file change
+  const [imgUploadPer, setImgUploadPer] = useState(0);
+  // console.log(file); -- for test purpose: to see how the file changes 
+  // console.log(imgUploadPer);
+  const [imgUploadError, setImgUploadError] = useState(null);
+  const [formData, setFormData] = useState({});
+  console.log(formData); //-- for test purpose: to see how form data changes
+
+  //use useEffect to perform side effects of this UI: if detect file, then upload to the page
+  useEffect( ()=>{
+    if(file) {
+      handleFileUpload(file);
+      }
+    }, [file] );// The [file] array is a dependency means that this effect is dependent on the file variable. 
+              //If file changes between renders (for instance, due to user interaction), the code within the
+              //useEffect will be executed again.
+
+  const handleFileUpload=(file)=>{
+    //1. get the storage ( a container) from 
+    const storage = getStorage(app); //create a Firebase storage instance so that I can perform various ops,
+                                     //here, I want to upload the image. "app" is the storage name
+    const fileName = new Date().getTime()+ file.name; //"name" is a DOM attribute, S.A. <input type="text" id="myInput" name="username" />
+                                              //add data is to create a unique identifier for file name
+    const storageRef = ref(storage, fileName);//create a place so that we knwo where we put the file
+    const upload = uploadBytesResumable(storageRef, file);//create a percentage mechanism to display 
+                                                    //the perc later on the screen for uploading img and errors might occur
+    upload.on('state_changed', (snapshot)=>{//use on() method which listens to events, track state changes during the upload process.
+                        //'state_change' is the event being listened to. 'snapshot' represents the current state
+                        // of the upload at the moment the event is triggered.
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log(`Loading... ${progress}%`);//for test purpose: check if progress display 
+      setImgUploadPer(Math.round(progress));
+      },
+      (error)=>{
+        setImgUploadError(error);
+      },
+    
+    //retrieve img from the path stored in Storage that I set up earlier
+    ()=>{
+      getDownloadURL(upload.snapshot.ref).then( (downloadedURL)=>
+        setFormData({
+          ...formData,
+          picture: downloadedURL//for picture, use the URL we just downloaded
+        })
+       )
+    })
+ 
+  };
+
+
+  /*
+  Filebase storage rules: 
+      allow read;
+      allow write: if
+      request.resource.size <2048*2048 && request.resource.contentType.matches('image/.*')
+  */
   return (
     <div className='p-3'>
       <h1 className='text-center text-4xl font-semibold py-16'>User Profile</h1>
       <form className='flex flex-col gap-4 max-w-lg mx-auto'>
-        <img src={currentUser.picture} alt='profile picture' className='rounded-full w-24 h-24
-           object-cover cursor-pointer self-center ' /> {/* name "picture" refer to model */} 
+          {/* 1) type set as "file" display a btn on screen for us to choose file from our computer
+        however, I need to achieve when I click the image, a window pop up to choose file from.
+        To achieve, I can use this "file" type as a ref -- Use "useRef" in React to achieve this see Note #19.
+        2) files is a property from <input> HTML element
+        */}
+        <input type='file' ref={fileRef} onChange={ (event) => setFile(event.target.files[0])} hidden accept='image/*' />
+        {/* if formData.picture exist, then display it, else keep the current profile picture */}
+        <img src={formData.picture || currentUser.picture} alt='profile picture' onClick={ ()=>fileRef.current.click() } 
+           className='rounded-full w-24 h-24 object-cover cursor-pointer self-center ' /> {/* name "picture" refer to model */} 
+        {/* display the upload progress on screen. If upload fail, show red words. Else if upload
+            is in progress, show green words. Else if upload successful, show blue words. Else (for ex. 
+            no picture is chosen, or picture format is wrong, display null on screen)  */}
+        <p className='text-sm self-center font-style: italic'>
+          {imgUploadError ? (<span className='text-red-600'>Something wrong, profile pricture must be an image and smaller than 4MB</span>) 
+                            : imgUploadPer>0 && imgUploadPer<100 ? (<span className='text-green-500'>{`Uploading... ${imgUploadPer}`}</span>)
+                              : imgUploadPer===100? (<span className='text-blue-600'>Upload successful!</span>) 
+                                : ''
+          }
+        </p>
+
         <input type='text' id='userName' placeholder='Your username' className='border rounded-lg p-3 '></input>
         <input type='email' id='email' placeholder='email' className='border rounded-lg p-3'></input>
         <input type='text' id='password' placeholder='password' className='border rounded-lg p-3'></input>
