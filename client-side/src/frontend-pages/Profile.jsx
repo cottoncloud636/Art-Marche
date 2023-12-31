@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useEffect } from 'react'; 
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import {app} from '../../src/firebaseConfig.js';
-import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail, deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail } from '../redux/user/userSlice.js';
+import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail, deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail, logoutUserAcctStart, logoutUserAcctSuccess, logoutUserAcctFail } from '../redux/user/userSlice.js';
 import { useDispatch } from 'react-redux';
 
 export default function Profile() {
@@ -117,7 +117,24 @@ export default function Profile() {
     } catch (error) {
       dispatch(deleteUserAcctFail(error.message));
     }
-  }
+  };
+
+  const handleLogout = async ()=>{
+    try{
+      dispatch(logoutUserAcctStart());
+      const res = await fetch('/api/auth/logout');
+      const data = await res.json();
+      //then in order to let "logout" take effect accross the website, dispatch the action to redux store
+      if (data.success === false){ //success came from index.js middleware
+        dispatch(logoutUserAcctFail(data.message));
+        return;
+      }
+      dispatch(logoutUserAcctSuccess(data));
+    } catch(error){
+      dispatch(logoutUserAcctFail(data.message));
+
+    }
+  };
 
   /*
   Filebase storage rules: 
@@ -163,7 +180,7 @@ export default function Profile() {
       </form>
       <div className='flex justify-center mt-5 max-w-lg mx-auto'>
         <p onClick={handleDeleteUser} className='text-blue-600 cursor-help'>Want to delete your account?</p>
-        <p className='text-blue-600 cursor-pointer ml-10'>Logout</p>
+        <p onClick={handleLogout} className='text-blue-600 cursor-pointer ml-10'>Logout</p>
       </div>
       <p className='text-green-700 font-style: italic text-center'>{updateSuccess ? 'Update successful!' : ''}</p>
       <p className="font-style:italic text-red-600">{error ? error : ''}</p>

@@ -59,11 +59,26 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    logoutUserAcctStart: (state)=>{
+      state.loading = true;
+    },
+    logoutUserAcctSuccess: (state, action) => {
+      state.currentUser = null; //if delete success, set currentUser to null 
+      state.loading = false;
+      state.error = null;
+    },
+    logoutUserAcctFail: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    }
   }
 });
     
 // Action creators are generated for each case reducer function
-export const { loginStart, loginSuccess, loginfail, updateUserProfileStart, updateUserProfileSuccess, 
-    updateUserProfileFail, deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail} = userSlice.actions;
+export const { 
+    loginStart, loginSuccess, loginfail, 
+    updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail, 
+    deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail, 
+    logoutUserAcctStart, logoutUserAcctSuccess, logoutUserAcctFail} = userSlice.actions;
 
 export default userSlice.reducer;
