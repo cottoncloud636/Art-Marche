@@ -38,3 +38,18 @@ export const updateForm=async (req, res, next)=>{
         next(error);
     }
 };
+
+export const deleteUser = async (req, res, next)=>{
+    if (req.user.id != req.params.id) //req.user.id came from checkUser.js -- token from jwt
+        //use middleware--the customized error handler to pass status code and msg
+        return next(errorHandler(401, 'You are not authorized to delete this user account'));
+    
+    try {//else means id matches, find this id in User model (mongoDB) and delete this user acct
+        await User.findByIdAndDelete(req.params.id);
+        res.clearCookie('access_token');
+        res.status(200).json('User account was successfully deleted.');
+
+    } catch (error) {
+        next(error);
+    }
+};

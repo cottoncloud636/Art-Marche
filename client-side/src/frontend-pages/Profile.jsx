@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useEffect } from 'react'; 
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import {app} from '../../src/firebaseConfig.js';
-import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail } from '../redux/user/userSlice.js';
+import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail, deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail } from '../redux/user/userSlice.js';
 import { useDispatch } from 'react-redux';
 
 export default function Profile() {
@@ -98,6 +98,27 @@ export default function Profile() {
       }
   };
 
+  const handleDeleteUser = async ()=>{
+    try {
+      dispatch(deleteUserAcctStart());
+      const res = await fetch (`/api/user/delete/${currentUser._id}`, 
+        {
+          method: 'DELETE', //in DELETE request, I don't care to pass the heeade and body, I just need 
+                            //server to find the acct based on id and delete it.
+        }
+      );
+      //then in order to let "delete" take effect accross the website, dispatch the action to redux store
+      const data = await res.json();
+      if (data.success===false){
+        dispatch(deleteUserAcctFail(data.message));
+        return;
+      }
+      dispatch(deleteUserAcctSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserAcctFail(error.message));
+    }
+  }
+
   /*
   Filebase storage rules: 
       allow read;
@@ -141,7 +162,7 @@ export default function Profile() {
           {loading ? 'One moment please...' : 'Update your profile'}</button>
       </form>
       <div className='flex justify-center mt-5 max-w-lg mx-auto'>
-        <p className='text-blue-600 cursor-help'>Want to delete your account?</p>
+        <p onClick={handleDeleteUser} className='text-blue-600 cursor-help'>Want to delete your account?</p>
         <p className='text-blue-600 cursor-pointer ml-10'>Logout</p>
       </div>
       <p className='text-green-700 font-style: italic text-center'>{updateSuccess ? 'Update successful!' : ''}</p>

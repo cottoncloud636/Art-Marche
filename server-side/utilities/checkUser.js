@@ -2,7 +2,7 @@ import { errorHandler } from "./customizederrors.js";
 import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next)=>{
-    const token = req.cookies.userCredential_token; //retrieves the token value from the cookies present in the incoming
+    const token = req.cookies.access_token; //retrieves the token value from the cookies present in the incoming
                                     // request (req).
     if (!token) return next(errorHandler(401, 'Unauthorized user')); //if token can't be found in the
                             //incoming request, then no such user exist401 unauthorized code

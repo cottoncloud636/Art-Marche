@@ -56,7 +56,7 @@ export const login =  async (req, res, next)=>{
                                             //pass the 'secret' in here.
         //separate password info from the rest of the info:
         const {password: psw, ...restInfo} = existingUserName._doc;
-        res.cookie('userCredential_token', token, {httpOnly:true}).status(200).json(restInfo);//save token to cookie. 
+        res.cookie('access_token', token, {httpOnly:true}).status(200).json(restInfo);//save token to cookie. 
             //optional to add other creteria for this token, S.A. no other party can use this token except this 
             //http; how long (a session) do I want to keep this cookie etc.
                      
