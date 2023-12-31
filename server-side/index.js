@@ -1,10 +1,11 @@
 import express  from "express";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
-import userRouter from './routes/users.routes.js';
-import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/users.routes.js'; //userRouter is just an alias for "router", so that I can distinguish dsfferent routers
+import authRouter from './routes/auth.routes.js'; //same, authRouter is just an alias for "router"
 import { verifyToken } from "./utilities/checkUser.js";
 import cookieParser from "cookie-parser";
+import listingRouter from './routes/listing.routes.js'
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use('/api/user', userRouter); //whenever sb. goto this endpoint: /api/user, 
                                   //that we created
 
 app.use('/api/auth', authRouter); 
+
+app.use('/api/listing', listingRouter);
 
 //add middleware to handle various errors
 app.use((err, req, res, next) => { //err: the err we send to middle, next: go to next middleware in the stack
