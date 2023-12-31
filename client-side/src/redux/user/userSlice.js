@@ -33,11 +33,24 @@ const userSlice = createSlice({
     loginfail: (state, action) => {//loginfail: Updates error and loading states based on loginfail action's payload.
       state.error = action.payload;
       state.loading = false;
+    },
+    updateUserProfileStart: (state)=>{
+      state.loading = true;
+    },
+    updateUserProfileSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = null; //if we have an error earlier, we set this error to null
+    },
+    updateUserProfileFail: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+      // state.error = null;
     }
   }
 });
     
 // Action creators are generated for each case reducer function
-export const { loginStart, loginSuccess, loginfail } = userSlice.actions;
+export const { loginStart, loginSuccess, loginfail, updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail } = userSlice.actions;
 
 export default userSlice.reducer;

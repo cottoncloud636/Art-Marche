@@ -5,16 +5,22 @@ import { useState } from 'react';
 import { useEffect } from 'react'; 
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import {app} from '../../src/firebaseConfig.js';
+import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail } from '../redux/user/userSlice.js';
+import { useDispatch } from 'react-redux';
 
 export default function Profile() {
   const fileRef = useRef(null);
-  const {currentUser} = useSelector( (state)=>state.user );
+  const {currentUser, loading, error} = useSelector( (state)=>state.user ); //select from userSlice.js
   const [file, setFile] = useState(undefined); //use a local state to keep track of file change
   const [imgUploadPer, setImgUploadPer] = useState(0);
   // console.log(file); -- for test purpose: to see how the file changes 
   // console.log(imgUploadPer);
   const [imgUploadError, setImgUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+
+  const dispatch = useDispatch();
+  
   console.log(formData); //-- for test purpose: to see how form data changes
 
   //use useEffect to perform side effects of this UI: if detect file, then upload to the page
@@ -58,6 +64,39 @@ export default function Profile() {
  
   };
 
+  const handleChange = (event)=>{
+    setFormData({
+      ...formData,
+      [event.target.id]: event.target.value //[] allows property name to be determined dynamically at runtime
+    });
+  };
+
+  const handleSubmit = async (event)=>{
+      event.preventDefault();
+      try {
+        dispatch(updateUserProfileStart());
+        //this id in currentUser.id came from the cookie info in session, currentUser came from the result of useSeletor (the redux store)
+        const res = await fetch(`/api/user/update/${currentUser._id}`, 
+            {                        
+              method: 'POST',
+              headers:{'Content-Type': 'application/json'},
+              body: JSON.stringify(formData),
+            }
+        );
+        const data = await res.json();
+        //if failed to receive the data from server, then dispatch the error to redux and return directly
+        if (data.success===false){  //the "success" came from index.js middleware
+          dispatch(updateUserProfileFail(data.message));
+          return;
+        }
+        //else dispatch the data to redux 
+        dispatch(updateUserProfileSuccess(data));
+        setUpdateSuccess(true);
+      } catch (error) {
+        dispatch(updateUserProfileFail(error.message)); //if login failed due to certain error, dispatch the 
+        //updateUserProfileFail method with its error message to redux store.
+      }
+  };
 
   /*
   Filebase storage rules: 
@@ -68,7 +107,7 @@ export default function Profile() {
   return (
     <div className='p-3'>
       <h1 className='text-center text-4xl font-semibold py-16'>User Profile</h1>
-      <form className='flex flex-col gap-4 max-w-lg mx-auto'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-lg mx-auto'>
           {/* 1) type set as "file" display a btn on screen for us to choose file from our computer
         however, I need to achieve when I click the image, a window pop up to choose file from.
         To achieve, I can use this "file" type as a ref -- Use "useRef" in React to achieve this see Note #19.
@@ -89,15 +128,24 @@ export default function Profile() {
           }
         </p>
 
-        <input type='text' id='userName' placeholder='Your username' className='border rounded-lg p-3 '></input>
-        <input type='email' id='email' placeholder='email' className='border rounded-lg p-3'></input>
-        <input type='text' id='password' placeholder='password' className='border rounded-lg p-3'></input>
-        <button className='bg-purple-500 text-white p-3 rounded-lg hover:bg-purple-400 disabled: opacity-70'>Update your profile</button>
+        <input type='text' id='userName' placeholder='Your username' defaultValue={currentUser.userName} 
+          onChange={handleChange}
+          className='border rounded-lg p-3 '></input>
+        <input type='email' id='email' placeholder='email' defaultValue={currentUser.email}
+          onChange={handleChange}
+          className='border rounded-lg p-3'></input>
+        <input type='password' id='password' placeholder='password' 
+          onChange={handleChange}
+          className='border rounded-lg p-3'></input>
+        <button disabled={loading} className='bg-purple-500 text-white p-3 rounded-lg hover:bg-purple-400 disabled: opacity-70'>
+          {loading ? 'One moment please...' : 'Update your profile'}</button>
       </form>
       <div className='flex justify-center mt-5 max-w-lg mx-auto'>
         <p className='text-blue-600 cursor-help'>Want to delete your account?</p>
         <p className='text-blue-600 cursor-pointer ml-10'>Logout</p>
       </div>
+      <p className='text-green-700 font-style: italic text-center'>{updateSuccess ? 'Update successful!' : ''}</p>
+      <p className="font-style:italic text-red-600">{error ? error : ''}</p>
     </div>
   )
 }
