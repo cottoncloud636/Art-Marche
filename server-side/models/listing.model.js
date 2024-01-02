@@ -21,7 +21,7 @@ const listingSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    origin:{
+    source:{
         type: String,
         required: true,
     }, 

@@ -7,6 +7,7 @@ import About from './frontend-pages/About';
 import Profile from './frontend-pages/Profile';
 import Header from './frontend-components/Header';
 import PrivateRouteComp from './frontend-components/PrivateRouteComp';
+import ArtListing from './frontend-pages/ArtListing';
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
       <Route path='/about' element={<About />} />
       <Route element = {<PrivateRouteComp />}>
         <Route path='/profile' element={<Profile />} />
+        <Route path='/list-art' element={<ArtListing />} />
       </Route>
 
     </Routes>

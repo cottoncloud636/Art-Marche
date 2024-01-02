@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         head: ['Rock Salt', 'cursive'],
         nav: ['Philosopher', 'sans-serif'],
+        createheader: ['Rubik Broken Fax'],
      },
      gradientColorStops:theme=>({
       'blue-pink':{

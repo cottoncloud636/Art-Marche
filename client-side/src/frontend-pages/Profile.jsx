@@ -7,6 +7,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import {app} from '../../src/firebaseConfig.js';
 import { updateUserProfileStart, updateUserProfileSuccess, updateUserProfileFail, deleteUserAcctStart, deleteUserAcctSuccess, deleteUserAcctFail, logoutUserAcctStart, logoutUserAcctSuccess, logoutUserAcctFail } from '../redux/user/userSlice.js';
 import { useDispatch } from 'react-redux';
+import {Link} from 'react-router-dom';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -177,6 +178,10 @@ export default function Profile() {
           className='border rounded-lg p-3'></input>
         <button disabled={loading} className='bg-purple-500 text-white p-3 rounded-lg hover:bg-purple-400 disabled: opacity-70'>
           {loading ? 'One moment please...' : 'Update your profile'}</button>
+        <Link to={'/list-art'}>
+          <button disabled={loading} className='bg-purple-500 text-white p-3 rounded-lg hover:bg-purple-400 disabled: opacity-70'>
+            {loading ? 'One moment please...' : 'Click here to list your arts'}</button>
+        </Link>
       </form>
       <div className='flex justify-center mt-5 max-w-lg mx-auto'>
         <p onClick={handleDeleteUser} className='text-blue-600 cursor-help'>Want to delete your account?</p>
