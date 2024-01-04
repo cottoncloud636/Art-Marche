@@ -22,5 +22,45 @@
     {
         "key": 6, 
         "value": "Chalk"
+    },
+    {
+        "key": 7, 
+        "value": "Watercolor Painting"
+    },
+    {
+        "key": 8, 
+        "value": "Oil Painting"
+    },
+    {
+        "key": 9, 
+        "value": "Acrylic Paint"
+    },
+    {
+        "key": 10, 
+        "value": "Egg Tempera Paint"
+    },
+    {
+        "key": 11, 
+        "value": "Gouache"
+    },
+    {
+        "key": 12, 
+        "value": "Hot Wax Painting"
+    },
+    {
+        "key": 13, 
+        "value": "Fresco Painting"
+    },
+    {
+        "key": 14, 
+        "value": "AI generated"
+    },    
+    {
+        "key": 15, 
+        "value": "Sketch"
+    },
+    {
+        "key": 16, 
+        "value": "Other"
     }
 ]
