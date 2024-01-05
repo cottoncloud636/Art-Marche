@@ -41,10 +41,11 @@ export default function Register() {
                                       //here, it specific media type or MIME type indicating that the content in
                                       // the body of the request is in JSON format the format of the data being 
                                       //sent in an HTTP request.
-          body: JSON.stringify(formInfo),//Send formInfo as the request body after converting JSON string
+          body: JSON.stringify(formInfo),//Send formInfo as the request body after converting js obj to JSON string
       }    
       );
-      const data = await res.json();//Retrieve response from server (res) and parses it as JSON, storing the 
+      const data = await res.json();//Retrieve response from server (res) and  it converts the JSON data received 
+                                    //from the response body into a JavaScript object. And storing the 
                             //result in the data variable. This assumes that the server responds with JSON data.
       console.log(data);//for test purpose, to see what data do we get back after submitting forminfo to server
       if (data.success===false){

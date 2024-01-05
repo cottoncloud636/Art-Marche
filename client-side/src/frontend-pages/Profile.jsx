@@ -68,7 +68,7 @@ export default function Profile() {
   const handleChange = (event)=>{
     setFormData({
       ...formData,
-      [event.target.id]: event.target.value //[] allows property name to be determined dynamically at runtime
+      [event.target.id]: event.target.value //returns the name of the variable, not the value, [] allows property name to be determined dynamically at runtime
     });
   };
 

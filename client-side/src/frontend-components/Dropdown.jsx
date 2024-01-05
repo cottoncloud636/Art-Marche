@@ -3,7 +3,7 @@ import { useState } from "react";
 import medium from '../../src/medium.json';
 import { HiOutlineChevronDown, HiOutlineChevronUp} from "react-icons/hi";
 
-function Dropdown({items, handleSelection}){
+function Dropdown({items, handleSelection, onChange}){
     const [isOpen, setIsOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
 
@@ -15,6 +15,7 @@ function Dropdown({items, handleSelection}){
     const handleItemClick=(value)=>{
         setSelectedItem(value);
         handleSelection(value);
+        onChange(value);
         console.log('Selected:', value);
         setIsOpen(false);
     }
