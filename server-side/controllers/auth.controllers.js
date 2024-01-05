@@ -46,7 +46,7 @@ export const login =  async (req, res, next)=>{
                                                                //that client request has not been completed 
                                                                //because it lacks valid authentication 
                                                                //credentials for the requested resource.
-        //else if psw is valid, then create a cookie (doing so by creating a token using jwt)
+        //else if psw is valid, then create cookies (doing so by creating a token using jwt)
         const token = jwt.sign({id: existingUserName._id}, process.env.JWT_SECRET); //use jsonwebtoken library to
                                                                                    // sign and verify tokens
                                             //sign() function used to generate a new jsonwebtoken based on the

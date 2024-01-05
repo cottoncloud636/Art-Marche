@@ -76,7 +76,7 @@ export default function Profile() {
       event.preventDefault();
       try {
         dispatch(updateUserProfileStart());
-        //this id in currentUser.id came from the cookie info in session, currentUser came from the result of useSeletor (the redux store)
+        //this _id in currentUser._id came from the cookie info in session, currentUser came from the result of useSeletor (the redux store)
         const res = await fetch(`/api/user/update/${currentUser._id}`, 
             {                        
               method: 'POST',

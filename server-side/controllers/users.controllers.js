@@ -1,6 +1,8 @@
 import User from "../models/users.model.js";
 import { errorHandler } from "../utilities/customizederrors.js";
 import bcryptjs from 'bcryptjs';
+import Listing from "../models/listing.model.js";
+
 
 export const routeContent = (req, res)=>{
     res.json(
@@ -51,5 +53,24 @@ export const deleteUser = async (req, res, next)=>{
 
     } catch (error) {
         next(error);
+    }
+};
+
+export const getUserArtListing = async (req, res, next)=>{ //used async because getting response takes time
+                                                           //"next" is used to handle error 
+    if (req.user.id === req.params.id){ //"user" came from userSlice.js. "id" in req.user.id came from the 
+                                        //token, refer to auth.controllders.js -- line 50                   
+        try {
+            const userArtListing = await Listing.find({//"Listing" is the name of model from listing.model.js
+                userRef: req.params.id  //"userRef" is a property in listing,model.js, which refers to a user account
+                                        //that is currently logged in
+            });
+                res.status(200).json(userArtListing);
+            } catch (error) { //the if statement wrap the try and catch block, meaning under the circumstance that
+                             //user account is already verified, here is the other errors that I catch
+                next(error);
+              }
+    } else{ //while this error is when user account verification failed
+        return next(errorHandler(401 ,'You are not authorized to view this listing.')) //errorHandler from customizederror.js
     }
 };
