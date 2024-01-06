@@ -18,11 +18,16 @@ export default function Profile() {
   // console.log(imgUploadPer);
   const [imgUploadError, setImgUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  console.log(formData); //-- for test purpose: to see how form data changes
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const dispatch = useDispatch();
+
+  const [displayUploadsError, setDisplayUploadsError] = useState(false);
+  const [userUploads, setUserUploads] = useState([]);
+  console.log('userUplods:'+userUploads);
+
   
-  console.log(formData); //-- for test purpose: to see how form data changes
 
   //use useEffect to perform side effects of this UI: if detect file, then upload to the page
   useEffect( ()=>{
@@ -137,6 +142,25 @@ export default function Profile() {
     }
   };
 
+  const handleDisplayUploads = async ()=>{
+    try {
+      setDisplayUploadsError(false);
+      //fetch the upload info from API route that I set up for retriving listing that user created
+      const res = await fetch(`api/user/user-art-listing/${currentUser._id}`); //currentUser came from userSlice.js
+      const data = await res.json();//retrieve json response from the API call and convert it to JS object
+      if (data.success===false){//success came from index.js line 42 the response format from API call
+        setDisplayUploadsError(true);
+        return;
+      }
+      console.log("data:"+data);
+      setUserUploads(data); 
+
+    } catch (error) {
+      //need a state to track the error
+      setDisplayUploadsError(true);
+    }
+  };
+
   /*
   Filebase storage rules: 
       allow read;
@@ -189,6 +213,37 @@ export default function Profile() {
       </div>
       <p className='text-green-700 font-style: italic text-center'>{updateSuccess ? 'Update successful!' : ''}</p>
       <p className="font-style:italic text-red-600">{error ? error : ''}</p>
+      <div className=' text-red-50 max-w-lg mx-auto flex mt-5 mb-4'>
+        <button onClick={handleDisplayUploads} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-auto flex items-center ' 
+          >Click to preview your uploads <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 ml-2 animate-bounce" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v10.586l3.293-3.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L9 14.586V4a1 1 0 011-1z" clip-rule="evenodd" />
+  </svg>
+        </button>
+      </div>
+      <p>{displayUploadsError? 'Something went wrong' : ''}</p>
+      <div className='gap-4 max-w-lg mx-auto'>
+        {userUploads 
+        && userUploads.length>0 
+        && userUploads.map( (upload)=> //userUploads return an array contains another arrays of 
+                                        //[ [userid, name, artist, paintUrls ...], [xxx, xxx, xxx] ]
+                                        //look into each element (which is also an array), then later on extract
+                                        //the paintUrls from that array
+            <div key={upload._id} className='flex items-center justify-between gap-5 border border-gray-400 mb-2'> {/* key is a must for using map since I need to identify each element */}
+              <Link to={`/listing/${upload._id}`} className='mt-4'>{/* when user click the image, it redirect them to this specific upload */}
+                                              {/* the /listing endpoint was created in index.js */}
+                <img src={upload.paintUrls[0]} alt='some random upload' className='ml-4 w-20 h-20 object-contain '/>
+              </Link>
+              <Link to={`/listing/${upload._id}`} class=' text-red-400 flex-1 hover:underline font-salsa text-lg truncate' >
+                <p>{upload.listingName}</p>
+              </Link>
+              <div className='flex flex-col'>
+                <button className='bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Edit this listing</button>
+                <button className='bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-red-500 rounded'>Delete this listing</button>
+            </div>
+            
+          </div>
+        )}
+      </div>
     </div>
   )
-}
+      }

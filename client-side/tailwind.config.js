@@ -10,6 +10,7 @@ export default {
         head: ['Rock Salt', 'cursive'],
         nav: ['Philosopher', 'sans-serif'],
         createheader: ['Rubik Broken Fax'],
+        salsa:['Salsa'],
      },
      gradientColorStops:theme=>({
       'blue-pink':{
