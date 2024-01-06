@@ -27,6 +27,7 @@ export default function Profile() {
   const [userUploads, setUserUploads] = useState([]);
   console.log('userUplods:'+userUploads);
 
+  const [deleteError, setDeleteError] = useState(false);
   
 
   //use useEffect to perform side effects of this UI: if detect file, then upload to the page
@@ -161,6 +162,25 @@ export default function Profile() {
     }
   };
 
+  const handleDeleteList = async (uploadlistId)=>{
+    try {
+      const res = await fetch(`/api/listing/deletelist/${uploadlistId}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      if (data.success===false){
+        setDeleteError(true);
+        return;
+      }
+      //else if data is successfully converted to js obj, meaning server successfully send back a response 
+      //then display the rest of the listing on the screen except the deleted one
+      //prev is a param represent an array contains all previous and current userUploads list value, then fiter
+      //takes each list from this array and filter out the value based on the condition
+      setUserUploads( (prev)=>prev.filter( (list)=>list._id != uploadlistId) );
+    } catch (error) {
+      setDeleteError(true);
+    }
+  };
   /*
   Filebase storage rules: 
       allow read;
@@ -216,7 +236,7 @@ export default function Profile() {
       <div className=' text-red-50 max-w-lg mx-auto flex mt-5 mb-4'>
         <button onClick={handleDisplayUploads} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-auto flex items-center ' 
           >Click to preview your uploads <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 ml-2 animate-bounce" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v10.586l3.293-3.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L9 14.586V4a1 1 0 011-1z" clip-rule="evenodd" />
+          <path fillRule="evenodd" d="M10 3a1 1 0 011 1v10.586l3.293-3.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L9 14.586V4a1 1 0 011-1z" clipRule="evenodd" />
   </svg>
         </button>
       </div>
@@ -233,12 +253,19 @@ export default function Profile() {
                                               {/* the /listing endpoint was created in index.js */}
                 <img src={upload.paintUrls[0]} alt='some random upload' className='ml-4 w-20 h-20 object-contain '/>
               </Link>
-              <Link to={`/listing/${upload._id}`} class=' text-red-400 flex-1 hover:underline font-salsa text-lg truncate' >
+              <Link to={`/listing/${upload._id}`} className=' text-red-400 flex-1 hover:underline font-salsa text-lg truncate' >
                 <p>{upload.listingName}</p>
               </Link>
               <div className='flex flex-col'>
                 <button className='bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Edit this listing</button>
-                <button className='bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-red-500 rounded'>Delete this listing</button>
+                {/* Since we need to know which list we need to delete, hence I need to pass in a parameter
+                    but in order to prevent js call this function w/o even clicking due to the parenthesis around
+                    parameters, hence I need to use a call back function */}
+                <button onClick={()=>handleDeleteList(upload._id)}
+                  className='bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-red-500 rounded'
+                  >Delete this listing
+                </button>
+                <p>{deleteError? 'Something went wrong' : ''}</p>
             </div>
             
           </div>
