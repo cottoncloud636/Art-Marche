@@ -33,3 +33,21 @@ export const deleteList = async (req, res, next)=>{
         next(error);
     }
 };
+
+export const updateArtList = async (req, res, next)=>{
+    //1. check if list exist
+    const listToBeUpdate = await Listing.findById(req.params.id);
+    if (!listToBeUpdate) return next(errorHandler(404,'The list you are trying to update does not exist in our database' ));
+    //2. and check if user is authoeized to edit this list. By comparing the id in session vs userRef which
+    //   represent the user who created this list
+    if (req.user.id !== listToBeUpdate.userRef) return next(errorHandler(401, 'You are not allowed to update the list that created by others.'));
+    //3. else, in try and catch block, perform the update operation. Use new:true ensures we get the most 
+    //   updated list, otherwise the old info will be returned
+    try {
+        const updatedArtList= await Listing.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        res.status(200).json(updatedArtList);
+    } catch (error) {  
+        next(error);
+        
+    }
+}
