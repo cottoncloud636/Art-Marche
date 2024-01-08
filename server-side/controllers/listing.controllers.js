@@ -47,7 +47,19 @@ export const updateArtList = async (req, res, next)=>{
         const updatedArtList= await Listing.findByIdAndUpdate(req.params.id, req.body, {new: true});
         res.status(200).json(updatedArtList);
     } catch (error) {  
+        next(error);   
+    }
+};
+
+export const getArtListInfo = async (req, res, next)=>{
+    //first check if list exist
+    const thatList = await Listing.findById(req.params.id);
+    if (!thatList) return next(errorHandler(404, 'The list you are trying to view does not exist in our database'));
+    //1. perform get op in try and catch block. 
+    try {
+        res.status(200).json(thatList);
+    } catch (error) {
         next(error);
         
     }
-}
+};

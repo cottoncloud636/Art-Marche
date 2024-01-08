@@ -11,6 +11,7 @@ export default {
         nav: ['Philosopher', 'sans-serif'],
         createheader: ['Rubik Broken Fax'],
         salsa:['Salsa'],
+        fatface:['Abril Fatface'],
      },
      gradientColorStops:theme=>({
       'blue-pink':{

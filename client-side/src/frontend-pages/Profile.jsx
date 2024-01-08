@@ -244,7 +244,7 @@ export default function Profile() {
       <div className='gap-4 max-w-lg mx-auto'>
         {userUploads 
         && userUploads.length>0 
-        && userUploads.map( (upload)=> //userUploads return an array contains another arrays of 
+        && userUploads.map( (upload)=> (//userUploads return an array contains another arrays of 
                                         //[ [userid, name, artist, paintUrls ...], [xxx, xxx, xxx] ]
                                         //look into each element (which is also an array), then later on extract
                                         //the paintUrls from that array
@@ -257,7 +257,12 @@ export default function Profile() {
                 <p>{upload.listingName}</p>
               </Link>
               <div className='flex flex-col'>
-                <button className='bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Edit this listing</button>
+              <Link to={`/edit-art/${upload._id}`}>
+                <button 
+                  className='bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'
+                  >Edit this listing
+                </button>
+              </Link>
                 {/* Since we need to know which list we need to delete, hence I need to pass in a parameter
                     but in order to prevent js call this function w/o even clicking due to the parenthesis around
                     parameters, hence I need to use a call back function */}
@@ -269,7 +274,7 @@ export default function Profile() {
             </div>
             
           </div>
-        )}
+        ))}
       </div>
     </div>
   )

@@ -9,6 +9,7 @@ import Header from './frontend-components/Header';
 import PrivateRouteComp from './frontend-components/PrivateRouteComp';
 import ArtListing from './frontend-pages/ArtListing';
 import Listing from './frontend-pages/Listing';
+import EditArtList from './frontend-pages/EditArtList';
 
 export default function App() {
   return (<BrowserRouter>
@@ -27,6 +28,7 @@ export default function App() {
       <Route element = {<PrivateRouteComp />}>
         <Route path='/profile' element={<Profile />} />
         <Route path='/list-art' element={<ArtListing />} />
+        <Route path='/edit-art/:listId' element={<EditArtList/>} />
       </Route>
 
     </Routes>
