@@ -8,7 +8,7 @@ import Profile from './frontend-pages/Profile';
 import Header from './frontend-components/Header';
 import PrivateRouteComp from './frontend-components/PrivateRouteComp';
 import ArtListing from './frontend-pages/ArtListing';
-import Listing from './frontend-pages/Listing';
+import ListDetail from './frontend-pages/ListDetail';
 import EditArtList from './frontend-pages/EditArtList';
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
       <Route path='/register' element={<Register />} /> {/* explain: the component Regsiter resides in endpoint /register */}
       <Route path='/login' element={<Login />} />
       <Route path='/about' element={<About />} />
-      <Route path='/listing' element={<Listing />} />
+      <Route path='/listdetail/:listIddetail' element={<ListDetail />} />
 
       <Route element = {<PrivateRouteComp />}>
         <Route path='/profile' element={<Profile />} />

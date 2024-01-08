@@ -190,7 +190,7 @@ export default function EditArtList() {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ //turn the body from JS obj. to json format and send to this 
-                                                //'/api/listing/create' addr, and store the result to res
+                                                //'/api/listing/editlist' addr, and store the result to res
                     ...formInfo,
                     userRef: currentUser._id //from useSelector
                 })
@@ -200,8 +200,8 @@ export default function EditArtList() {
             if (data.success===false){ //success came from index.js line 42 the response format from API call
                 setSubmitError(data.message);
             }
-            //else if API call is successful, navigate to that user's listing page: /list-art/user_id url page
-            navigate(`/listing/${data._id}`); //data is the js obj that was converted from json response from server
+            //else if API call is successful, navigate to that user's listing page: /listdetail/user_id url page
+            navigate(`/listdetail/${data._id}`); //data is the js obj that was converted from json response from server
                                                //inside, there is a property "_id". It can be found either in mongoDB
                                                //instance or inspect-->network-->inside the submission instance
         } catch (error) {
