@@ -12,7 +12,11 @@ export default {
         createheader: ['Rubik Broken Fax'],
         salsa:['Salsa'],
         fatface:['Abril Fatface'],
+        montserrat: ['Montserrat Alternates'],
      },
+     fontWeight: {
+      '300': 300,
+    },
      gradientColorStops:theme=>({
       'blue-pink':{
         '0': '#3490dc',

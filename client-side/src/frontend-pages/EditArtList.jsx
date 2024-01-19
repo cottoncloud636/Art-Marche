@@ -23,7 +23,7 @@ export default function EditArtList() {
         listingName: '', //key varibale name came from 'id' below
         description: '',
         artist: '',
-        source: 'original', //this is just an initial value (user initially see original checkbox is checked on the page)
+        source: '', //this is just an initial value (user initially see original checkbox is checked on the page)
         price: 0,
         
       });
@@ -64,9 +64,6 @@ export default function EditArtList() {
       },[]);//pass in an array (each element in json is an array)
 
 
-
-
-    
       const handleMediumSelection = (value)=>{
         setSelectedMedium(value);
         setFormInfo({
@@ -166,10 +163,10 @@ export default function EditArtList() {
             });
         }; 
     
-        if (event.target.id==='original' || event.target.id==='imitation' || event.target.id==='otherwork'){
+        if (event.target.id==='Original' || event.target.id==='Imitation' || event.target.id==='Other Artist(s) work'){
             setFormInfo({
                 ...formInfo,
-                source: event.target.id //each event is identified by their id, type was initially set to 'original', 
+                source: event.target.id, //each event is identified by their id, type was initially set to 'original', 
                                       //then change occurs (in this case by check one box), based on the if statement
                                       //the type can be changed to any event that their id is changed(thru check the box action)
             });
@@ -249,22 +246,22 @@ export default function EditArtList() {
                              {/* check the box only when the form Info source is equal to 'original' */}
                         <div className='flex flex-wrap gap-2'>
                             <div className='flex gap-3'>
-                                <input type='checkbox' id='original' value='original'
-                                    checked={formInfo.source==='original'} onChange={handleChange}
+                                <input type='checkbox' id='Original' value='Original work'
+                                    checked={formInfo.source==='Original'} onChange={handleChange}
                                     className='w-4'
                                 />
                                 <span>Original work</span>
                             </div>
                             <div className='flex gap-3'>
-                                <input type='checkbox' id='imitation' value='imitation'
-                                    checked={formInfo.source==='imitation'} onChange={handleChange}
+                                <input type='checkbox' id='Imitation' value='imitation'
+                                    checked={formInfo.source==='Imitation'} onChange={handleChange}
                                     className='w-4'
                                 />
                                 <span>Imitation</span>
                             </div>  
                             <div className='flex gap-3'>
-                                <input type='checkbox' id='otherwork' value='otherwork'
-                                    checked={formInfo.source==='otherwork'} onChange={handleChange}
+                                <input type='checkbox' id='Other Artist(s) work' value='Other Artist(s) work'
+                                    checked={formInfo.source==='Other Artist(s) work'} onChange={handleChange}
                                     className='w-4'
                                 />
                                 <span>Other Artist's work</span>

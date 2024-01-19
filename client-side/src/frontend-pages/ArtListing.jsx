@@ -20,9 +20,8 @@ export default function ArtListing() {
     listingName: '', //key varibale name came from 'id' below
     description: '',
     artist: '',
-    source: 'original', //this is just an initial value (user initially see original checkbox is checked on the page)
+    source: '', //this is just an initial value (user initially see original checkbox is checked on the page)
     price: 0,
-    
   });
   console.log(formInfo);//for test purpose
   const [uploadError, setUploadError] = useState(false); //use a state to track any errors occurs during uploading
@@ -218,21 +217,21 @@ export default function ArtListing() {
                          {/* check the box only when the form Info source is equal to 'original' */}
                     <div className='flex flex-wrap gap-2'>
                         <div className='flex gap-3'>
-                            <input type='checkbox' id='original' value='original'
+                            <input type='checkbox' id='original' value='Original work'
                                 checked={formInfo.source==='original'} onChange={handleChange}
                                 className='w-4'
                             />
                             <span>Original work</span>
                         </div>
                         <div className='flex gap-3'>
-                            <input type='checkbox' id='imitation' value='imitation'
+                            <input type='checkbox' id='imitation' value='Imitation'
                                 checked={formInfo.source==='imitation'} onChange={handleChange}
                                 className='w-4'
                             />
                             <span>Imitation</span>
                         </div>  
                         <div className='flex gap-3'>
-                            <input type='checkbox' id='otherwork' value='otherwork'
+                            <input type='checkbox' id='otherwork' value='Other Artist&apos;s work'
                                 checked={formInfo.source==='otherwork'} onChange={handleChange}
                                 className='w-4'
                             />
