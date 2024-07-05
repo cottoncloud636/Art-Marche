@@ -98,7 +98,11 @@ export const googleauth = async (req, res, next)=>{
             });
             await newGleAuthUser.save(); //save the new google auth user
             const token = jwt.sign({id: newGleAuthUser._id}, process.env.JWT_SECRET);//create token
-            const {password: pass, ...rest} = newGleAuthUser._doc;//separate the psw from the token
+            const {password: pass, ...rest} = newGleAuthUser._doc;//separate the psw from the token. In 
+                                         //Mongoose, the _doc property is used to access the underlying plain
+                                         //JavaScript obj that represents a MongoDB document. When retrieve a 
+                                         //document from MongoDB using Mongoose, the document is wrapped in a 
+                                         //Mongoose document, which includes various methods and properties.
             res.cookie('access_token', token, {httpOnly: true}).status(200).json(rest);//create a response
                              // (remember I am in server-side now, save token to cookie
         }

@@ -28,6 +28,7 @@ app.use('/api/auth', authRouter);
 
 app.use('/api/listing', listingRouter);
 
+
 //add middleware to handle various errors
 app.use((err, req, res, next) => { //err: the err we send to middle, next: go to next middleware in the stack
                                   //after current middleware finish the op
@@ -47,8 +48,6 @@ app.use((err, req, res, next) => { //err: the err we send to middle, next: go to
     );                
 
 });
-
-
 app.listen(3000, ()=>{
     console.log('Server is running on port 3000');
 });

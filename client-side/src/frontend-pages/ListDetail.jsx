@@ -9,15 +9,30 @@ import {Navigation} from 'swiper/modules';
 // Import Swiper styles
 import 'swiper/css/bundle';
 import { PiPaintBrushFill } from "react-icons/pi";
+import { useSelector } from 'react-redux';
+import Messagebox from '../frontend-components/MessageBox';
 
 export default function ListDetail() {
   const params = useParams();
   SwiperCore.use([Navigation]);
+  const {currentUser} = useSelector((state) => state.user); //extract current user from userSlice, name of the 
+                                                          //var. all come from userSlice.js
   const [listdetail, setListdetail] = useState(null);
+
   const [loadPage, setLoadPage] = useState(false);//add loading effect when page is loading
   const [error, setError] = useState(false);
+  console.log(currentUser._id, listdetail?.userRef); //for test purpose: to see if currentUser is the same 
+                                                     //person who upload the painting
+
+
+
+  const [contact, setContact] = useState(false); //I want to track the change: contact button shows, then 
+                                                //click it, contact button is gone
   
-  //fetch this list's detailed info using useEffect. Use useEffect() because although displaying the list detail
+  const [uploader, setUploader] = useState(null);
+  
+  
+                                                //fetch this list's detailed info using useEffect. Use useEffect() because although displaying the list detail
   //is a visual UI for user, but it is not directly related to the UI. this "UI" was a result of fetching info
   //from another page
   useEffect(()=>{
@@ -29,6 +44,7 @@ export default function ListDetail() {
       //"navigate(`/listdetail/${data._id}`)" to capture this id in URL
       const res = await fetch(`/api/listing/getlist/${params.listIddetail}`);
       const data = await res.json();
+      console.log('test fetchListDetail: ' + data)
         if (data.success===false) {
           setError(true);
           setLoadPage(false);
@@ -46,6 +62,29 @@ export default function ListDetail() {
     };
   fetchListDetail();
   }, [params.listIddetail]);//useEffect need dependency. Run useEffect one time or whenever params.id changes
+
+
+  console.log('test listdetail: '+listdetail);
+
+
+
+
+  // useEffect(()=>{
+  //   const fetchUploader = async()=>{
+  //     try {
+  //     //fetch the info from this API route, but the API need to know which list I want to fetch, and this id
+  //     //came from the client side endpoint in URL when using click the "update it now" btn, thru 
+  //     //"navigate(`/listdetail/${data._id}`)" to capture this id in URL
+  //     const res = await fetch(`/api/user/${listdetail.userRef}`);
+  //     const data = await res.json();
+  //     setUploader(data);
+  //     } catch (error) {
+  //         console.log(error);
+  //     }
+  //   };
+  //   fetchUploader();
+  // }, [listdetail.userRef]);//useEffect need dependency. Run useEffect one time or whenever params.id changes
+
 
   return (
     <div>
@@ -92,8 +131,30 @@ export default function ListDetail() {
               <span className='font-semibold text-black'>Description - </span>
               {listdetail.description}
             </p>
-            <p>Uploaded by: {listdetail.userRef.userName}</p>
 
+            {/* {uploader && (<p>Uploaded by: {uploader.userName}</p>)} */}
+
+            
+            {/*userRef refer to the person who upload the current art lists. So compare the userRef vs
+               currentUser id to see if uploader and current user are the same person.
+               Then I test if contact button has been clicked or not, !contact means false, regardless what I
+               initially set up for "contact"/ So !contact means when the button has not been clicked, show
+               the button*/}
+            {currentUser && listdetail.userRef !== currentUser._id && !contact &&
+              (<button onClick={() => setContact(true)}
+                className='bg-purple-400 text-blue-900 rounded-md uppercase hover:italic hover:opacity-90'
+              >Contact the Artist
+              </button>)
+            }
+            {contact && (
+                            <Messagebox
+                                listdetail={listdetail}
+                                currentUserId={currentUser._id}
+                                onClose={() => setContact(false)}
+                            />
+                        ) } {/*if contact button is still true, then show the message text box */}
+
+            
           </div>
           {/* ******** end: a bottom div to contain the entire word detail of the listing */}    
         

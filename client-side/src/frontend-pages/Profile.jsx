@@ -249,11 +249,11 @@ export default function Profile() {
                                         //look into each element (which is also an array), then later on extract
                                         //the paintUrls from that array
             <div key={upload._id} className='flex items-center justify-between gap-5 border border-gray-400 mb-2'> {/* key is a must for using map since I need to identify each element */}
-              <Link to={`/listing/${upload._id}`} className='mt-4'>{/* when user click the image, it redirect them to this specific upload */}
+              <Link to={`/listdetail/${upload._id}`} className='mt-4'>{/* when user click the image, it redirect them to this specific upload */}
                                               {/* the /listing endpoint was created in index.js */}
                 <img src={upload.paintUrls[0]} alt='some random upload' className='ml-4 w-20 h-20 object-contain '/>
               </Link>
-              <Link to={`/listing/${upload._id}`} className=' text-red-400 flex-1 hover:underline font-salsa text-lg truncate' >
+              <Link to={`/listdetail/${upload._id}`} className=' text-red-400 flex-1 hover:underline font-salsa text-lg truncate' >
                 <p>{upload.listingName}</p>
               </Link>
               <div className='flex flex-col'>

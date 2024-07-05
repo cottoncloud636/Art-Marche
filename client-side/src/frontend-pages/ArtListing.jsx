@@ -169,7 +169,7 @@ export default function ArtListing() {
             setSubmitError(data.message);
         }
         //else if API call is successful, navigate to that user's listing page: /list-art/user_id url page
-        navigate(`/listing/${data._id}`); //data is the js obj that was converted from json response from server
+        navigate(`/listdetail/${data._id}`); //data is the js obj that was converted from json response from server
                                            //inside, there is a property "_id". It can be found either in mongoDB
                                            //instance or inspect-->network-->inside the submission instance
     } catch (error) {

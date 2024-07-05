@@ -6,6 +6,7 @@ import { updateForm } from "../controllers/users.controllers.js";
 import { verifyToken } from "../utilities/checkUser.js";
 import { deleteUser } from "../controllers/users.controllers.js";
 import { getUserArtListing } from "../controllers/users.controllers.js";
+import { getUploader } from "../controllers/users.controllers.js";
 
 const router = express.Router();
 
@@ -21,4 +22,6 @@ router.get('/user-art-listing/:id', verifyToken, getUserArtListing)//get the lis
                                     //from the model, make this /user-art-listing/:id as an address for the info 
                                     //that I just retrieved a home address
                     
+router.get('/:id', verifyToken, getUploader);
+
 export default router;

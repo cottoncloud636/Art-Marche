@@ -33,7 +33,7 @@ export const updateForm=async (req, res, next)=>{
                 picture: req.body.picture,
         }           
         }, {new: true}) //new: ensures I will get the new info, not the previous info
-        const {password, ...rest} = updateUser._doc;
+        const {password, ...rest} = updateUser._doc; //retrieve JS obj that represent a MongoDB document
         res.status(200).json(rest);
 
     } catch(error){
@@ -59,11 +59,15 @@ export const deleteUser = async (req, res, next)=>{
 export const getUserArtListing = async (req, res, next)=>{ //used async because getting response takes time
                                                            //"next" is used to handle error 
     if (req.user.id === req.params.id){ //"user" came from userSlice.js. "id" in req.user.id came from the 
-                                        //token, refer to auth.controllders.js -- line 50                   
+                                        //token, refer to auth.controllders.js -- line 50 
+                                        //params.id: this displays in URL, and this came from the pre-defined 
+                                        //client-side URL. So once user is logged in, id will be automatically 
+                                        //displayed on the URL. 
+                                        //a "params" can be things like id, searching creteria etc.              
         try {
             const userArtListing = await Listing.find({//"Listing" is the name of model from listing.model.js
-                userRef: req.params.id  //"userRef" is a property in listing,model.js, which refers to a user account
-                                        //that is currently logged in
+                userRef: req.params.id  //"userRef" is a property in listing,model.js, which refers to the user who uploaded this listing
+
             });
                 res.status(200).json(userArtListing);
             } catch (error) { //the if statement wrap the try and catch block, meaning under the circumstance that
@@ -72,5 +76,17 @@ export const getUserArtListing = async (req, res, next)=>{ //used async because 
               }
     } else{ //while this error is when user account verification failed
         return next(errorHandler(401 ,'You are not authorized to view this listing.')) //errorHandler from customizederror.js
+    }
+};
+
+export const getUploader = async (req, res, next)=>{
+    try {
+        const uploader = await User.findById(req.params.id);  
+        if (!uploader) return next(errorHandler(404, 'We could\'t find who uploaded this listing'));
+        //else, uploader is found, we don't want to show the password to user
+        const {password: psw, ...rest} = uploader._doc; //retrieve JS obj that represent a MongoDB document
+        res.status(200).json(rest); //send back the response with status code 200 and a json file containing "rest"
+    } catch (error) {
+        next(error);
     }
 };
