@@ -63,3 +63,46 @@ export const getArtListInfo = async (req, res, next)=>{
         
     }
 };
+
+
+export const getArtLists = async (req, res, next)=>{
+    try {
+        //set up the search creteria
+        const numofReturnLimit = parseInt(req.query.numofReturnLimit) || 8;//refer to number of results returned in a single response or page.
+        const startIndexOfPage = parseInt(req.query.startIndexOfPage) || 0; //startIndex is typically used in conjunction with .skip() to skip over a specified number of documents in the query results.
+        
+        let source = req.query.source;
+        if (source === undefined || source === 'all'){ //when user type nothing in search bar, it is "undefined"
+            source = {$in:["original", "imitation", "otherwork", "Imitation"]};//seach in database for all, no matter it is original work, imitation or other's work
+        }
+
+        let artMedium = req.query.artMedium;
+        if (artMedium === undefined || artMedium === 'all') {
+            //these strings need to be exactly the same as the data in database
+            artMedium = { $in: ['Pastel', 'Graphite Pencil', 'Colored Pencil', 'Charcoal', 'Ink Pen', 'Chalk'] };
+        }
+
+        const keyword = req.query.keyword || ''; //keyword follows "listingName"
+
+        const sortResult = req.query.sortResult || 'price';
+
+        const order = req.query.order || 'descending';
+
+        /*
+         * 1) $regex: a MongoDB operator used to perform regular expression queries on string fields. 
+        Powerful tools for pattern matching and string manipulation, allowing to search for strings that match a 
+        specified pattern.
+         */
+        const artlistings = await Listing.find({
+            listingName: { $regex: keyword, $options: 'i' },//make the search not case sensitive
+            source,
+            artMedium,
+          }).sort({ [sortResult]: order }) //sort the result based on the "order" rule that I defined
+            .limit(numofReturnLimit)
+            .skip(startIndexOfPage);
+      
+          return res.status(200).json(artlistings);
+        } catch (error) {
+          next(error);
+        }
+};
