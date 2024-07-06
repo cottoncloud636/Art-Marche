@@ -1,40 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SearchPage = () => {
   const [keyword, setKeyword] = useState('');
   const [source, setSource] = useState('');
-  const [medium, setMedium] = useState('');
+  const [artMedium, setArtMedium] = useState('');
   const [sort, setSort] = useState('price-asc');
   const [results, setResults] = useState([]);
 
   const navigate = useNavigate();
+  console.log('Results:', results);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    urlSearchParams.set('keyword', keyword);
-    urlSearchParams.set('source', source);
-    urlSearchParams.set('medium', medium);
-    urlSearchParams.set('sort', sort);
+    const urlSearchParams = new URLSearchParams();
+    if (keyword) urlSearchParams.set('keyword', keyword);
+    if (source) urlSearchParams.set('source', source);
+    if (artMedium) urlSearchParams.set('artMedium', artMedium);
+    if (sort) urlSearchParams.set('sort', sort);
     const query = urlSearchParams.toString();
+    console.log('Query:', query); // Log the query
+
     navigate(`/search?${query}`);
-    fetchResults();
+    fetchResults(query);
   };
 
-  const fetchResults = async () => {
-    const response = await fetch(`/api/search?keyword=${keyword}&source=${source}&medium=${medium}&sort=${sort}`);
-    const data = await response.json();
-    setResults(data);
+  const fetchResults = async (query) => {
+    try {
+      const response = await fetch(`/api/listing/getsearch?${query}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('Fetched data:', data);
+      setResults(data);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
   };
 
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
-    const searchParamsInURL = urlSearchParams.get('keyword');
-    if (searchParamsInURL) {
-      setKeyword(searchParamsInURL);
-    }
-    fetchResults();
+    const keywordParam = urlSearchParams.get('keyword');
+    const sourceParam = urlSearchParams.get('source');
+    const artMediumParam = urlSearchParams.get('artMedium');
+    const sortParam = urlSearchParams.get('sort');
+
+    if (keywordParam) setKeyword(keywordParam);
+    if (sourceParam) setSource(sourceParam);
+    if (artMediumParam) setArtMedium(artMediumParam);
+    if (sortParam) setSort(sortParam);
+
+    const query = urlSearchParams.toString();
+    fetchResults(query);
   }, [window.location.search]);
 
   return (
@@ -42,7 +60,7 @@ const SearchPage = () => {
       {/* Search Section */}
       <section className="bg-gray-100 p-6 rounded-lg mb-8">
         <form onSubmit={handleSubmit}>
-          {/* Search by Keyword */} 
+          {/* Search by Keyword */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Search by Keyword</h3>
             <input
@@ -55,11 +73,12 @@ const SearchPage = () => {
             />
           </div>
 
-        {/* 1) htmlFor: in react htmlFor is used instead of for to avoid conflicts with the JavaScript for loop.
+           {/* 1) htmlFor: in react htmlFor is used instead of for to avoid conflicts with the JavaScript for loop.
                The value of htmlFor should match the id of the form control it is associated with.
                Enhances accessibility and usability by creating a clear association between labels and form controls. */}
+
+          {/* Source Section */}
           <div className="flex justify-between space-x-4 mb-6">
-            {/* Source Section */}
             <div className="flex-1">
               <h3 className="text-lg font-semibold mb-2">Source</h3>
               <div className="flex items-center space-x-4">
@@ -111,63 +130,130 @@ const SearchPage = () => {
                 <div className="flex items-center">
                   <input
                     type="radio"
-                    id="pencil"
-                    name="medium"
-                    value="pencil"
-                    checked={medium === 'pencil'}
-                    onChange={(e) => setMedium(e.target.value)}
-                    className="mr-2"
-                  />
-                  <label htmlFor="pencil">Pencil</label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="pen"
-                    name="medium"
-                    value="pen"
-                    checked={medium === 'pen'}
-                    onChange={(e) => setMedium(e.target.value)}
-                    className="mr-2"
-                  />
-                  <label htmlFor="pen">Pen</label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
                     id="pastel"
-                    name="medium"
-                    value="pastel"
-                    checked={medium === 'pastel'}
-                    onChange={(e) => setMedium(e.target.value)}
+                    name="artMedium"
+                    value="Pastel"
+                    checked={artMedium === 'Pastel'}
+                    onChange={(e) => setArtMedium(e.target.value)}
                     className="mr-2"
                   />
-                  <label htmlFor="pastel">Pastel</label>
+                  <label htmlFor="Pastel">Pastel</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="pencil"
+                    name="artMedium"
+                    value="Pencil"
+                    checked={artMedium === 'Pencil'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Pencil">Pencil</label>
                 </div>
                 <div className="flex items-center">
                   <input
                     type="radio"
                     id="charcoal"
-                    name="medium"
-                    value="charcoal"
-                    checked={medium === 'charcoal'}
-                    onChange={(e) => setMedium(e.target.value)}
+                    name="artMedium"
+                    value="Charcoal"
+                    checked={artMedium === 'Charcoal'}
+                    onChange={(e) => setArtMedium(e.target.value)}
                     className="mr-2"
                   />
-                  <label htmlFor="charcoal">Charcoal</label>
+                  <label htmlFor="Charcoal">Charcoal</label>
                 </div>
                 <div className="flex items-center">
                   <input
                     type="radio"
-                    id="chalk"
-                    name="medium"
-                    value="chalk"
-                    checked={medium === 'chalk'}
-                    onChange={(e) => setMedium(e.target.value)}
+                    id="pen"
+                    name="artMedium"
+                    value="Pen"
+                    checked={artMedium === 'Pen'}
+                    onChange={(e) => setArtMedium(e.target.value)}
                     className="mr-2"
                   />
-                  <label htmlFor="chalk">Chalk</label>
+                  <label htmlFor="Pen">Pen</label>
                 </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="chalk"
+                    name="artMedium"
+                    value="Chalk"
+                    checked={artMedium === 'Chalk'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Chalk">Chalk</label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="watercolor"
+                    name="artMedium"
+                    value="Watercolor"
+                    checked={artMedium === 'Watercolor'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Watercolor">Watercolor</label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="oil"
+                    name="artMedium"
+                    value="Oil"
+                    checked={artMedium === 'Oil'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Oil">Oil</label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="acrylic"
+                    name="artMedium"
+                    value="Acrylic"
+                    checked={artMedium === 'Acrylic'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Acrylic">Acrylic</label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="tempera"
+                    name="artMedium"
+                    value="Tempera"
+                    checked={artMedium === 'Tempera'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="Tempera">Tempera</label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="ai"
+                    name="artMedium"
+                    value="AI"
+                    checked={artMedium === 'AI'}
+                    onChange={(e) => setArtMedium(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="AI">AI</label>
+                </div>
+
               </div>
             </div>
 
@@ -176,7 +262,7 @@ const SearchPage = () => {
               <h3 className="text-lg font-semibold mb-2">Sort</h3>
               <select
                 id='sortresult'
-                value={sort}
+                defaultValue={'price_descending'}
                 onChange={(e) => setSort(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
@@ -201,7 +287,11 @@ const SearchPage = () => {
           results.map((result) => (
             <div key={result._id} className="result-item mb-4 p-4 border-b border-gray-200">
               <h4 className="text-xl font-semibold">{result.listingName}</h4>
-              <p>{result.description}</p>
+              <Link to={`/listdetail/${result._id}`}>
+                <img src={result.paintUrls[0]} alt='paint' className='h-[320px] w=[320px] sm:h-[220px] object-cover hover:scale-105 transition-scale duration-300'/>
+
+              </Link>
+              <p className="text-sm italic text-gray-600 line-clamp-3">{result.description}</p>
               <p className="text-gray-600">Price: ${result.price}</p>
             </div>
           ))

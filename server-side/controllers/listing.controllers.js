@@ -74,13 +74,17 @@ export const getArtLists = async (req, res, next)=>{
         let source = req.query.source;
         if (source === undefined || source === 'all'){ //when user type nothing in search bar, it is "undefined"
             source = {$in:["original", "imitation", "otherwork", "Imitation"]};//seach in database for all, no matter it is original work, imitation or other's work
-        }
+        }else {
+            source = { $eq: source }; // Use the provided source value
+          }
 
         let artMedium = req.query.artMedium;
         if (artMedium === undefined || artMedium === 'all') {
             //these strings need to be exactly the same as the data in database
-            artMedium = { $in: ['Pastel', 'Graphite Pencil', 'Colored Pencil', 'Charcoal', 'Ink Pen', 'Chalk'] };
-        }
+            artMedium = { $in: ['Pastel', 'Pencil', 'Charcoal', 'Pen', 'Chalk','Watercolor', 'Oil','Acrylic','Tempera', 'AI'] };
+        }else {
+            artMedium = { $eq: artMedium }; // Use the provided medium value
+          }
 
         const keyword = req.query.keyword || ''; //keyword follows "listingName"
 

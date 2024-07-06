@@ -5,62 +5,38 @@
     },
     {
         "key": 2, 
-        "value": "Graphite Pencil"
+        "value": "Pencil"
     },
     {
         "key": 3, 
-        "value": "Colored Pencil"
-    },
-    {
-        "key": 4, 
         "value": "Charcoal"
     },
     {
+        "key": 4, 
+        "value": "Pen"
+    },
+    {
         "key": 5, 
-        "value": "Ink Pen"
+        "value": "Chalk "
     },
     {
         "key": 6, 
-        "value": "Chalk"
+        "value": "Watercolor"
     },
     {
         "key": 7, 
-        "value": "Watercolor Painting"
+        "value": "Oil"
     },
     {
         "key": 8, 
-        "value": "Oil Painting"
+        "value": "Acrylic"
     },
     {
         "key": 9, 
-        "value": "Acrylic Paint"
+        "value": "Tempera"
     },
     {
         "key": 10, 
-        "value": "Egg Tempera Paint"
-    },
-    {
-        "key": 11, 
-        "value": "Gouache"
-    },
-    {
-        "key": 12, 
-        "value": "Hot Wax Painting"
-    },
-    {
-        "key": 13, 
-        "value": "Fresco Painting"
-    },
-    {
-        "key": 14, 
-        "value": "AI generated"
-    },    
-    {
-        "key": 15, 
-        "value": "Sketch"
-    },
-    {
-        "key": 16, 
-        "value": "Other"
+        "value": "AI"
     }
 ]
