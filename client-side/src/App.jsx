@@ -10,6 +10,7 @@ import PrivateRouteComp from './frontend-components/PrivateRouteComp';
 import ArtListing from './frontend-pages/ArtListing';
 import ListDetail from './frontend-pages/ListDetail';
 import EditArtList from './frontend-pages/EditArtList';
+import SearchPage from './frontend-pages/SearchPage';
 
 export default function App() {
   return (<BrowserRouter>
@@ -24,6 +25,8 @@ export default function App() {
       <Route path='/login' element={<Login />} />
       <Route path='/about' element={<About />} />
       <Route path='/listdetail/:listIddetail' element={<ListDetail />} />
+      <Route path='/search' element={<SearchPage />} />
+
 
       <Route element = {<PrivateRouteComp />}>
         <Route path='/profile' element={<Profile />} />
