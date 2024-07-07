@@ -6,6 +6,7 @@ import authRouter from './routes/auth.routes.js'; //same, authRouter is just an 
 import { verifyToken } from "./utilities/checkUser.js";
 import cookieParser from "cookie-parser";
 import listingRouter from './routes/listing.routes.js'
+import path from 'path';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ mongoose.connect(process.env.MONGODB).then( ()=> {
     }) .catch( (err)=>{
         console.log(err);
     });
+
+//create a dynamic path name, so that the project will be run on other machine
+const __dirname = path.resolve();
 
 const app = express();
 app.use(express.json()); //by default, we are not allowed to send json directly to server, hence, add this 
@@ -28,6 +32,11 @@ app.use('/api/auth', authRouter);
 
 app.use('/api/listing', listingRouter);
 
+app.use(express.static(path.join(__dirname, '/client-side/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client-side', 'dist', 'index.html'));
+  })
 
 //add middleware to handle various errors
 app.use((err, req, res, next) => { //err: the err we send to middle, next: go to next middleware in the stack
