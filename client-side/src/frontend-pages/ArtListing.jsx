@@ -1,5 +1,5 @@
 import React from 'react'
-import Dropdown from '../frontend-components/DropDown'
+import Dropdown from '../frontend-components/Dropdown'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import {app} from '../firebaseConfig';

@@ -7,6 +7,7 @@ const SearchPage = () => {
   const [artMedium, setArtMedium] = useState('');
   const [sort, setSort] = useState('price-asc');
   const [results, setResults] = useState([]);
+  const [showmore, setShowmore] = useState(false);
 
   const navigate = useNavigate();
   console.log('Results:', results);
@@ -27,11 +28,17 @@ const SearchPage = () => {
 
   const fetchResults = async (query) => {
     try {
+      // setShowmore(false);
       const response = await fetch(`/api/listing/getsearch?${query}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      if (data.length > 8) {
+        setShowmore(true);
+      } else {
+        setShowmore(false);
+      }
       console.log('Fetched data:', data);
       setResults(data);
     } catch (error) {
@@ -54,6 +61,36 @@ const SearchPage = () => {
     const query = urlSearchParams.toString();
     fetchResults(query);
   }, [window.location.search]);
+
+
+  const onClickShowMore = async ()=>{
+    //the idea is to fetch the rest of the listings when click show more button
+    //hence, the startIndex variable need to be set to the next starting point of the page
+    const currentListingNum = results.length;
+    const startIndex = currentListingNum;//the next start index is the same as the number of previous retrieved lists
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set('startIndex', startIndex);
+    const query = urlSearchParams.toString();
+    try {
+      const response = await fetch(`/api/listing/getsearch?${query}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('Show More Fetched data:', data);
+      if (data.length < 9) {
+        setShowmore(false);
+      }
+      setResults((prevResults) => [...prevResults, ...data]);
+    } catch (error) {
+      console.error('Error fetching more search results:', error);
+    }
+    // const response = await fetch(`/api/listing/getsearch?${query}`);
+    // const data = await response.json();
+    // if (data.length < 4 ) {setShowmore(false)};
+    // setResults([...results, ...data]); //updates the listings state by appending the new data to the existing listings 
+  };
+
 
   return (
     <div className="max-w-10xl mx-auto p-6">
@@ -297,6 +334,12 @@ const SearchPage = () => {
           ))
         ) : (
           <p>No results found</p>
+        )}
+
+        {showmore && (
+          <button onClick={()=>onClickShowMore} className="text-blue-600 hover:underline hover:italic p-7 text-center w-full"> 
+            click to show more...
+          </button>
         )}
       </section>
     </div>

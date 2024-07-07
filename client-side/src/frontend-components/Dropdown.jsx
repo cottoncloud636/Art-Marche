@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import medium from '../../src/medium.json';
+// import medium from '../../src/medium.json';
 import { HiOutlineChevronDown, HiOutlineChevronUp} from "react-icons/hi";
 
 function Dropdown({items, handleSelection, onChange}){
@@ -41,3 +41,5 @@ function Dropdown({items, handleSelection, onChange}){
     );
 }
 export default Dropdown;
+
+
