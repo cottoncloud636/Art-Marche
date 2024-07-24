@@ -1,5 +1,5 @@
+![Logo](client-side/src/1.png)
 
-![Logo](https://dl.dropboxusercontent.com/s/d3ne5ac85c8ggta2aww7g/1.png)
 
 
 # Art-Marche
